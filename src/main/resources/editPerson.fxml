@@ -10,11 +10,12 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:controller="sda.lukaszs.addressbookfx.controller.AddPersonController" prefHeight="400.0" prefWidth="640.0"
-      styleClass="label-header-form" stylesheets="@rootStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea"
-      xmlns:fx="http://javafx.com/fxml/1">
-    <Label styleClass="label-header-form" text="Add new user"/>
-    <AnchorPane styleClass="background" VBox.vgrow="ALWAYS">
+<VBox prefHeight="400.0" prefWidth="640.0" styleClass="label-header-form" stylesheets="@rootStyle.css"
+      xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sda.lukaszs.addressbookfx.controller.EditPersonController">
+    <Label styleClass="label-header-form" text="Edit user"/>
+    <AnchorPane styleClass="background"
+                VBox.vgrow="ALWAYS">
         <GridPane prefHeight="400.0" prefWidth="640.0" styleClass="grid-pane" AnchorPane.bottomAnchor="0.0"
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columnConstraints>
@@ -50,7 +51,7 @@
     </AnchorPane>
     <ButtonBar prefHeight="40.0" prefWidth="200.0">
       <buttons>
-          <Button onMouseClicked="#addPerson" fx:id="fxPersonFormSaveButton" mnemonicParsing="false" text="Save"/>
+          <Button onMouseClicked="#savePerson" fx:id="fxPersonFormSaveButton" mnemonicParsing="false" text="Save"/>
           <Button onMouseClicked="#cancel" fx:id="fxPersonFormCancelButton" mnemonicParsing="false" text="Cancel"/>
       </buttons>
     </ButtonBar>

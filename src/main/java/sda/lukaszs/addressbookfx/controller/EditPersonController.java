@@ -12,9 +12,12 @@ import sda.lukaszs.addressbookfx.model.Person;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddPersonController implements Initializable {
+public class EditPersonController implements Initializable {
 
     private Main main;
+
+
+    private Person selectedPerson;
 
     @FXML
     private TextField fxPersonFormName;
@@ -33,20 +36,42 @@ public class AddPersonController implements Initializable {
     @FXML
     private Button fxPersonFormCancelButton;
 
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
+
+    public void setSelectedPerson(Person selectedPerson) {
+        this.selectedPerson = selectedPerson;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
-    public void addPerson(MouseEvent mouseEvent) {
-        main.getPersonList().add(new Person(
+    public void initForm(){
+        if(selectedPerson!=null){
+            fxPersonFormName.setText(selectedPerson.getName());
+            fxPersonFormLastName.setText(selectedPerson.getLastName());
+            fxPersonFormAddress.setText(selectedPerson.getAddress());
+            fxPersonFormPostalCode.setText(selectedPerson.getPostalCode());
+            fxPersonFormCity.setText(selectedPerson.getCity());
+            fxPersonFormTelephone.setText(selectedPerson.getTelephone());
+        }
+    }
+
+    public void savePerson(MouseEvent mouseEvent) {
+        Person person = new Person(
                 fxPersonFormName.getText(),
                 fxPersonFormLastName.getText(),
                 fxPersonFormAddress.getText(),
                 fxPersonFormPostalCode.getText(),
                 fxPersonFormTelephone.getText(),
                 fxPersonFormCity.getText()
-        ));
+        );
+        main.getPersonList().set(main.getPersonList().indexOf(selectedPerson),person);
         Stage stage = (Stage) fxPersonFormSaveButton.getScene().getWindow();
         stage.close();
     }
@@ -56,7 +81,4 @@ public class AddPersonController implements Initializable {
         stage.close();
     }
 
-    public void setMain(Main main) {
-        this.main = main;
-    }
 }

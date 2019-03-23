@@ -98,10 +98,31 @@ public class AddressBookFXController implements Initializable {
         stage.show();
     }
 
-    public void editPerson(MouseEvent mouseEvent) {
+    public void editPerson(MouseEvent mouseEvent) throws IOException {
+        if(fxPersonTableView.getSelectionModel().getSelectedItem() != null){
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/editPerson.fxml"));
+            Scene scene = new Scene(loader.load(), 600, 400);
+            EditPersonController editPersonController = loader.getController();
+            editPersonController.setMain(main);
+            editPersonController.setSelectedPerson(fxPersonTableView.getSelectionModel().getSelectedItem());
+            editPersonController.initForm();
+            Stage stage = new Stage();
+            stage.setTitle("Edit person");
+            stage.requestFocus();
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     public void deletePerson(MouseEvent mouseEvent) {
+        if(fxPersonTableView.getSelectionModel().getSelectedItem() != null){
+            main.getPersonList().remove(fxPersonTableView.getSelectionModel().getSelectedItem());
+            if(fxPersonTableView.getSelectionModel().getSelectedItem() != null)
+                fillLabels(fxPersonTableView.getSelectionModel().getSelectedItem());
+            else
+                fillLabels(new Person("","","","","",""));
+        }
     }
 
     public void savePerson(MouseEvent mouseEvent) {
