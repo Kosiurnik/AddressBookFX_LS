@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sda.lukaszs.addressbookfx.Main;
@@ -15,6 +12,7 @@ import sda.lukaszs.addressbookfx.model.Person;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddressBookFXController implements Initializable {
@@ -117,16 +115,32 @@ public class AddressBookFXController implements Initializable {
 
     public void deletePerson(MouseEvent mouseEvent) {
         if(fxPersonTableView.getSelectionModel().getSelectedItem() != null){
-            main.getPersonList().remove(fxPersonTableView.getSelectionModel().getSelectedItem());
-            if(fxPersonTableView.getSelectionModel().getSelectedItem() != null)
-                fillLabels(fxPersonTableView.getSelectionModel().getSelectedItem());
-            else
-                fillLabels(new Person("","","","","",""));
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete person");
+            alert.setHeaderText(null);
+            alert.setContentText(String.format("Do you want to delete %s %s?", fxPersonTableView.getSelectionModel().getSelectedItem().getName(), fxPersonTableView.getSelectionModel().getSelectedItem().getLastName()));
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                main.getPersonList().remove(fxPersonTableView.getSelectionModel().getSelectedItem());
+                if(fxPersonTableView.getSelectionModel().getSelectedItem() != null)
+                    fillLabels(fxPersonTableView.getSelectionModel().getSelectedItem());
+                else
+                    fillLabels(new Person("","","","","",""));
+            } else {
+                // nic nie rób
+            }
         }
     }
 
     public void savePerson(MouseEvent mouseEvent) {
         Person.toJSON(main.getJsonFileName(),main.getPersonList());
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Database saved");
+        alert.setHeaderText(null);
+        alert.setContentText("Database saved successfully!");
+
+        alert.showAndWait();
     }
 
     private void fillLabels(Person person){
