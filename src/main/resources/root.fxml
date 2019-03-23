@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" stylesheets="rootStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sda.lukaszs.addressbookfx.controller.AddressBookFXController">
+<VBox prefHeight="400.0" prefWidth="640.0" stylesheets="rootStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sda.lukaszs.addressbookfx.controller.AddressBookFXController">
     <AnchorPane stylesheets="@rootStyle.css" VBox.vgrow="ALWAYS">
         <SplitPane dividerPositions="0.29797979797979796" prefHeight="374.4" prefWidth="640.0" stylesheets="@rootStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" stylesheets="@rootStyle.css">
-                <TableView onMouseClicked="#selectedPerson" fx:id="fxPersonTableView" prefHeight="372.8" prefWidth="187.2" stylesheets="@rootStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <TableView fx:id="fxPersonTableView" onMouseClicked="#selectedPerson" prefHeight="372.8" prefWidth="187.2" stylesheets="@rootStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                         <TableColumn fx:id="fxPersonTableColumnName" prefWidth="75.0" text="Name" />
                         <TableColumn fx:id="fxPersonTableColumnLastName" prefWidth="75.0" text="Lastname" />
@@ -31,10 +31,6 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="373.0" prefWidth="342.0" styleClass="split-data-container" stylesheets="@rootStyle.css">
                 <GridPane layoutX="46.0" layoutY="141.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="372.8" prefWidth="445.6" styleClass="grid-pane" stylesheets="@rootStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
@@ -64,10 +60,10 @@
     </AnchorPane>
     <ButtonBar stylesheets="@rootStyle.css">
       <buttons>
-          <Button onMouseClicked="#newPerson" fx:id="fxButtonNewPerson" mnemonicParsing="false" stylesheets="@rootStyle.css" text="New Person" />
-          <Button onMouseClicked="#editPerson" fx:id="fxButtonEditPerson" mnemonicParsing="false" stylesheets="@rootStyle.css" text="Edit" />
-          <Button onMouseClicked="#deletePerson" fx:id="fxButtonDeletePerson" mnemonicParsing="false" stylesheets="@rootStyle.css" text="Delete" />
-          <Button onMouseClicked="#savePerson" fx:id="fxButtonSavePerson" mnemonicParsing="false" stylesheets="@rootStyle.css" text="Save" />
+          <Button fx:id="fxButtonNewPerson" mnemonicParsing="false" onMouseClicked="#newPerson" stylesheets="@rootStyle.css" text="New Person" />
+          <Button fx:id="fxButtonEditPerson" mnemonicParsing="false" onMouseClicked="#editPerson" stylesheets="@rootStyle.css" text="Edit" />
+          <Button fx:id="fxButtonDeletePerson" mnemonicParsing="false" onMouseClicked="#deletePerson" stylesheets="@rootStyle.css" text="Delete" />
+          <Button fx:id="fxButtonSavePerson" mnemonicParsing="false" onMouseClicked="#savePerson" stylesheets="@rootStyle.css" text="Save" />
       </buttons>
         <VBox.margin>
           <Insets />
