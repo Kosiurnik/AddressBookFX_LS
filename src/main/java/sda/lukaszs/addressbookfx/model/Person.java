@@ -1,15 +1,31 @@
 package sda.lukaszs.addressbookfx.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import lombok.NoArgsConstructor;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@NoArgsConstructor
 public class Person {
-    private StringProperty name;
-    private StringProperty lastName;
-    private StringProperty address;
-    private StringProperty postalCode;
-    private StringProperty telephone;
-    private StringProperty city;
+
+    //JSON wywala błąd, jeśli się nie zainicjalizuje w tym miejscu
+    private StringProperty name = new SimpleStringProperty();
+    private StringProperty lastName = new SimpleStringProperty();
+    private StringProperty address = new SimpleStringProperty();
+    private StringProperty postalCode = new SimpleStringProperty();
+    private StringProperty telephone = new SimpleStringProperty();
+    private StringProperty city = new SimpleStringProperty();
 
     public Person(String name, String lastName, String address, String postalCode, String telephone, String city) {
         this.name = new SimpleStringProperty(name);
@@ -20,6 +36,39 @@ public class Person {
         this.city = new SimpleStringProperty(city);
     }
 
+    public static void toJSON(String filename, List<Person> people){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String JsonString = mapper.writeValueAsString(people);
+            Files.write(Paths.get(filename),JsonString.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ObservableList<Person> fromJSON(File file){
+        ObservableList<Person> output = FXCollections.observableArrayList();
+        List<Person> personList = readListFromJSON(file);
+        for(Person person : personList){
+            output.add(person);
+        }
+        return output;
+    }
+
+    private static List<Person> readListFromJSON(File file){
+        ObjectMapper mapper = new ObjectMapper();
+        List<Person> output = new ArrayList<>();
+        Person[] outArray;
+        try {
+            outArray = mapper.readValue(file,Person[].class);
+            output = Arrays.asList(outArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+
     public String getName() {
         return name.get();
     }
@@ -28,6 +77,7 @@ public class Person {
         return name;
     }
 
+    @JsonProperty("name")
     public void setName(String name) {
         this.name.set(name);
     }
@@ -40,6 +90,7 @@ public class Person {
         return lastName;
     }
 
+    @JsonProperty("lastName")
     public void setLastName(String lastName) {
         this.lastName.set(lastName);
     }
@@ -52,6 +103,7 @@ public class Person {
         return address;
     }
 
+    @JsonProperty("address")
     public void setAddress(String address) {
         this.address.set(address);
     }
@@ -64,6 +116,7 @@ public class Person {
         return postalCode;
     }
 
+    @JsonProperty("postalCode")
     public void setPostalCode(String postalCode) {
         this.postalCode.set(postalCode);
     }
@@ -76,6 +129,7 @@ public class Person {
         return telephone;
     }
 
+    @JsonProperty("telephone")
     public void setTelephone(String telephone) {
         this.telephone.set(telephone);
     }
@@ -88,6 +142,7 @@ public class Person {
         return city;
     }
 
+    @JsonProperty("city")
     public void setCity(String city) {
         this.city.set(city);
     }

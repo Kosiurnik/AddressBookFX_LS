@@ -10,15 +10,34 @@ import javafx.stage.Stage;
 import sda.lukaszs.addressbookfx.controller.AddressBookFXController;
 import sda.lukaszs.addressbookfx.model.Person;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Main extends Application {
 
+    private String jsonFileName = "json/database.json";
     private ObservableList<Person> personList = FXCollections.observableArrayList();
 
-    public Main() {
-        personList.add(new Person("Jan","Kowalski","Bydgoska 4","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Barbara","Jasińska","Toruńska 3","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Hubert","Rozwarski","Lazurowa 1","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Anna","Sobczak","Powstańców 6","85-123","123123111","Bydgoszcz"));
+    public Main() throws IOException {
+        File jsonFile = new File(jsonFileName);
+        if(Files.exists(Paths.get(jsonFileName))){
+            personList = Person.fromJSON(jsonFile);
+        }else{
+            if(!Files.exists(Paths.get("json")))
+                Files.createDirectory(Paths.get("json"));
+            Files.createFile(Paths.get(jsonFileName));
+            personList.add(new Person("Jan","Kowalski","Bydgoska 4","85-123","123123111","Bydgoszcz"));
+            personList.add(new Person("Barbara","Jasińska","Toruńska 3","85-123","123123111","Bydgoszcz"));
+            personList.add(new Person("Hubert","Rozwarski","Lazurowa 1","85-123","123123111","Bydgoszcz"));
+            personList.add(new Person("Anna","Sobczak","Powstańców 6","85-123","123123111","Bydgoszcz"));
+            Person.toJSON(jsonFileName,personList);
+        }
+
+    }
+    public String getJsonFileName() {
+        return jsonFileName;
     }
 
     public ObservableList<Person> getPersonList() {

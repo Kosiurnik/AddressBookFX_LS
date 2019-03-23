@@ -126,7 +126,7 @@ public class AddressBookFXController implements Initializable {
     }
 
     public void savePerson(MouseEvent mouseEvent) {
-
+        Person.toJSON(main.getJsonFileName(),main.getPersonList());
     }
 
     private void fillLabels(Person person){
