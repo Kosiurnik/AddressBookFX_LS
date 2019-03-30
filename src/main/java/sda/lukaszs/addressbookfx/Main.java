@@ -18,26 +18,19 @@ import java.nio.file.Paths;
 public class Main extends Application {
 
     private String jsonFileName = "json/database.json";
+    private String csvFileName = "csv/database.csv";
+
     private ObservableList<Person> personList = FXCollections.observableArrayList();
 
     public Main() throws IOException {
-        File jsonFile = new File(jsonFileName);
-        if(Files.exists(Paths.get(jsonFileName))){
-            personList = Person.fromJSON(jsonFile);
-        }else{
-            if(!Files.exists(Paths.get("json")))
-                Files.createDirectory(Paths.get("json"));
-            Files.createFile(Paths.get(jsonFileName));
-            personList.add(new Person("Jan","Kowalski","Bydgoska 4","85-123","123123111","Bydgoszcz"));
-            personList.add(new Person("Barbara","Jasińska","Toruńska 3","85-123","123123111","Bydgoszcz"));
-            personList.add(new Person("Hubert","Rozwarski","Lazurowa 1","85-123","123123111","Bydgoszcz"));
-            personList.add(new Person("Anna","Sobczak","Powstańców 6","85-123","123123111","Bydgoszcz"));
-            Person.toJSON(jsonFileName,personList);
-        }
-
+        loadFromJSON();
+        //loadFromCSV();
     }
     public String getJsonFileName() {
         return jsonFileName;
+    }
+    public String getCSVFileName() {
+        return csvFileName;
     }
 
     public ObservableList<Person> getPersonList() {
@@ -61,5 +54,38 @@ public class Main extends Application {
         primaryStage.setTitle("AddressBookFX");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+
+    private void loadFromCSV() throws IOException {
+        File csvFile = new File(csvFileName);
+        if(Files.exists(Paths.get(jsonFileName))){
+            personList = Person.fromCSV(csvFile);
+        }else{
+            if(!Files.exists(Paths.get("csv")))
+                Files.createDirectory((Paths.get("csv")));
+            Files.createFile(Paths.get(csvFileName));
+            initList();
+            Person.toCSV(csvFileName,personList);
+        }
+    }
+
+    private void loadFromJSON() throws IOException {
+        File jsonFile = new File(jsonFileName);
+        if(Files.exists(Paths.get(jsonFileName))){
+            personList = Person.fromJSON(jsonFile);
+        }else{
+            if(!Files.exists(Paths.get("json")))
+                Files.createDirectory(Paths.get("json"));
+            Files.createFile(Paths.get(jsonFileName));
+            initList();
+            Person.toJSON(jsonFileName,personList);
+        }
+    }
+
+    private void initList(){
+        personList.add(new Person("Jan","Kowalski","Bydgoska 4","85-123","123123111","Bydgoszcz"));
+        personList.add(new Person("Barbara","Jasińska","Toruńska 3","85-123","123123111","Bydgoszcz"));
+        personList.add(new Person("Hubert","Rozwarski","Lazurowa 1","85-123","123123111","Bydgoszcz"));
+        personList.add(new Person("Anna","Sobczak","Powstańców 6","85-123","123123111","Bydgoszcz"));
     }
 }

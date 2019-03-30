@@ -121,20 +121,19 @@ public class AddressBookFXController implements Initializable {
             alert.setContentText(String.format("Do you want to delete %s %s?", fxPersonTableView.getSelectionModel().getSelectedItem().getName(), fxPersonTableView.getSelectionModel().getSelectedItem().getLastName()));
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
+            if (result.isPresent() && result.get() == ButtonType.OK){
                 main.getPersonList().remove(fxPersonTableView.getSelectionModel().getSelectedItem());
                 if(fxPersonTableView.getSelectionModel().getSelectedItem() != null)
                     fillLabels(fxPersonTableView.getSelectionModel().getSelectedItem());
                 else
                     fillLabels(new Person("","","","","",""));
-            } else {
-                // nic nie rób
             }
         }
     }
 
     public void savePerson(MouseEvent mouseEvent) {
         Person.toJSON(main.getJsonFileName(),main.getPersonList());
+        Person.toCSV(main.getCSVFileName(),main.getPersonList());
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Database saved");
         alert.setHeaderText(null);

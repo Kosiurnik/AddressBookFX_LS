@@ -8,13 +8,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.NoArgsConstructor;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 public class Person {
@@ -46,6 +46,28 @@ public class Person {
         }
     }
 
+    public static void toCSV(String filename, List<Person> people){
+        BufferedWriter bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter((new FileWriter(filename)));
+            for(Person person : people){
+                bufferedWriter.write(person.toString());
+                bufferedWriter.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedWriter != null){
+                try {
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public static ObservableList<Person> fromJSON(File file){
         ObservableList<Person> output = FXCollections.observableArrayList();
         List<Person> personList = readListFromJSON(file);
@@ -68,6 +90,34 @@ public class Person {
         return output;
     }
 
+
+
+    public static ObservableList<Person> fromCSV(File csvFile) {
+        ObservableList<Person> output = FXCollections.observableArrayList();
+        BufferedReader bufferedReader = null;
+        String line = "";
+        String splitBy = ";"; //windowsowy excel oddziela średnikiem
+
+        try {
+            bufferedReader = new BufferedReader(new FileReader(csvFile));
+            while ((line = bufferedReader.readLine()) != null){
+                String[] person = line.split(splitBy);
+                output.add(new Person(person[0],person[1],person[2],person[3],person[4],person[5]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedReader != null){
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return output;
+    }
 
     public String getName() {
         return name.get();
@@ -149,6 +199,24 @@ public class Person {
 
     @Override
     public String toString() {
-        return String.format("%s %s, ul. %s %s %s, tel.: %s", getName(),getLastName(),getAddress(),getPostalCode(),getCity(),getTelephone());
+        return String.format("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", getName(),getLastName(),getAddress(),getPostalCode(),getCity(),getTelephone());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(getName(), person.getName()) &&
+                Objects.equals(getLastName(), person.getLastName()) &&
+                Objects.equals(getAddress(), person.getAddress()) &&
+                Objects.equals(getPostalCode(), person.getPostalCode()) &&
+                Objects.equals(getTelephone(), person.getTelephone()) &&
+                Objects.equals(getCity(), person.getCity());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getLastName(), getAddress(), getPostalCode(), getTelephone(), getCity());
     }
 }
