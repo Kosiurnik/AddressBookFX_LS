@@ -63,15 +63,22 @@ public class EditPersonController implements Initializable {
     }
 
     public void savePerson(MouseEvent mouseEvent) {
-        Person person = new Person(
+        selectedPerson.setName(fxPersonFormName.getText());
+        selectedPerson.setLastName(fxPersonFormLastName.getText());
+        selectedPerson.setAddress(fxPersonFormAddress.getText());
+        selectedPerson.setPostalCode(fxPersonFormPostalCode.getText());
+        selectedPerson.setTelephone(fxPersonFormTelephone.getText());
+        selectedPerson.setCity(fxPersonFormCity.getText());
+        /*Person person = new Person(
                 fxPersonFormName.getText(),
                 fxPersonFormLastName.getText(),
                 fxPersonFormAddress.getText(),
                 fxPersonFormPostalCode.getText(),
                 fxPersonFormTelephone.getText(),
                 fxPersonFormCity.getText()
-        );
-        main.getPersonList().set(main.getPersonList().indexOf(selectedPerson),person);
+        );*/
+        main.getPersonList().set(main.getPersonList().indexOf(selectedPerson),selectedPerson);
+        main.getPersonRepository().editPerson(selectedPerson);
         Stage stage = (Stage) fxPersonFormSaveButton.getScene().getWindow();
         stage.close();
     }

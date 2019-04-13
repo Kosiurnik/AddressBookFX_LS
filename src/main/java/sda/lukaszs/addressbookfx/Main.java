@@ -7,37 +7,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import sda.lukaszs.addressbookfx.controller.AddressBookFXController;
 import sda.lukaszs.addressbookfx.model.Person;
+import sda.lukaszs.addressbookfx.repository.PersonRepository;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class Main extends Application {
 
-    private String jsonFileName = "json/database.json";
-    private String csvFileName = "csv/database.csv";
+    private final static Logger logger = Logger.getLogger(Main.class);
+    private static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("addressbook-context.xml");
+    private PersonRepository personRepository = context.getBean("PersonRepository",PersonRepository.class);
 
     private ObservableList<Person> personList = FXCollections.observableArrayList();
 
-    public Main() throws IOException {
-        loadFromJSON();
-        //loadFromCSV();
-    }
-    public String getJsonFileName() {
-        return jsonFileName;
-    }
-    public String getCSVFileName() {
-        return csvFileName;
+    public Main() {
+        loadFromRepository();
     }
 
     public ObservableList<Person> getPersonList() {
         return personList;
     }
+    public PersonRepository getPersonRepository() { return personRepository; }
 
     public static void main(String[] args) {
+        BasicConfigurator.configure();
+        new HibernateInit();
         launch(args);
     }
 
@@ -47,6 +45,7 @@ public class Main extends Application {
         loader.setLocation(getClass().getResource("/root.fxml"));
         loader.load();
         Parent root = loader.getRoot();
+
         AddressBookFXController addressBookFXController = loader.getController();
         addressBookFXController.setMain(this);
         addressBookFXController.loadPerson();
@@ -56,36 +55,8 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private void loadFromCSV() throws IOException {
-        File csvFile = new File(csvFileName);
-        if(Files.exists(Paths.get(jsonFileName))){
-            personList = Person.fromCSV(csvFile);
-        }else{
-            if(!Files.exists(Paths.get("csv")))
-                Files.createDirectory((Paths.get("csv")));
-            Files.createFile(Paths.get(csvFileName));
-            initList();
-            Person.toCSV(csvFileName,personList);
-        }
-    }
-
-    private void loadFromJSON() throws IOException {
-        File jsonFile = new File(jsonFileName);
-        if(Files.exists(Paths.get(jsonFileName))){
-            personList = Person.fromJSON(jsonFile);
-        }else{
-            if(!Files.exists(Paths.get("json")))
-                Files.createDirectory(Paths.get("json"));
-            Files.createFile(Paths.get(jsonFileName));
-            initList();
-            Person.toJSON(jsonFileName,personList);
-        }
-    }
-
-    private void initList(){
-        personList.add(new Person("Jan","Kowalski","Bydgoska 4","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Barbara","Jasińska","Toruńska 3","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Hubert","Rozwarski","Lazurowa 1","85-123","123123111","Bydgoszcz"));
-        personList.add(new Person("Anna","Sobczak","Powstańców 6","85-123","123123111","Bydgoszcz"));
+    private void loadFromRepository(){
+        //wyciągam wszystkich ludzi z bazy danych
+        personList.addAll(personRepository.getPeople());
     }
 }

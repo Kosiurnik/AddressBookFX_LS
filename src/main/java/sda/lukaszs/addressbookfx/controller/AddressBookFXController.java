@@ -6,10 +6,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sda.lukaszs.addressbookfx.Main;
 import sda.lukaszs.addressbookfx.model.Person;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -39,6 +41,8 @@ public class AddressBookFXController implements Initializable {
     public Button fxButtonDeletePerson;
     @FXML
     public Button fxButtonSavePerson;
+    @FXML
+    public Button fxButtonImportData;
     @FXML
     public TableView<Person> fxPersonTableView;
     @FXML
@@ -122,6 +126,7 @@ public class AddressBookFXController implements Initializable {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
+                main.getPersonRepository().deletePerson(fxPersonTableView.getSelectionModel().getSelectedItem());
                 main.getPersonList().remove(fxPersonTableView.getSelectionModel().getSelectedItem());
                 if(fxPersonTableView.getSelectionModel().getSelectedItem() != null)
                     fillLabels(fxPersonTableView.getSelectionModel().getSelectedItem());
@@ -132,14 +137,39 @@ public class AddressBookFXController implements Initializable {
     }
 
     public void savePerson(MouseEvent mouseEvent) {
-        Person.toJSON(main.getJsonFileName(),main.getPersonList());
-        Person.toCSV(main.getCSVFileName(),main.getPersonList());
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Database saved");
-        alert.setHeaderText(null);
-        alert.setContentText("Database saved successfully!");
-
-        alert.showAndWait();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save database to file");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV", "*.csv"),
+                new FileChooser.ExtensionFilter("JSON", "*.json")
+        );
+        Stage stage = new Stage();
+        File file = fileChooser.showSaveDialog(stage);
+        if(file != null){
+            try{
+                System.out.println(file.getName());
+                switch(getFileExtension(file.getName())){
+                    case "csv": Person.toCSV(file.getPath(),main.getPersonList()); break;
+                    case "json": Person.toJSON(file.getPath(),main.getPersonList()); break;
+                    default: throw new IOException("Unsupported extension. Can read only valid csv or json.");
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Unsupported extension!");
+                alert.showAndWait();
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Database saved");
+            alert.setHeaderText(null);
+            alert.setContentText("Database saved successfully!");
+            alert.showAndWait();
+        }
     }
 
     private void fillLabels(Person person){
@@ -150,4 +180,41 @@ public class AddressBookFXController implements Initializable {
         fxCity.setText(person.getCity());
         fxTelephone.setText(person.getTelephone());
     }
+
+    public void importData(MouseEvent mouseEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose file to import");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        FileChooser.ExtensionFilter fileExtensions =
+                new FileChooser.ExtensionFilter(
+                        "Addressbook data", "*.json", "*.csv");
+        fileChooser.getExtensionFilters().add(fileExtensions);
+        Stage stage = new Stage();
+        File file = fileChooser.showOpenDialog(stage);
+        if(file != null){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Import data");
+            alert.setHeaderText(null);
+            alert.setContentText("Importing from the file will clear current data. Do you want to proceed?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                switch(getFileExtension(file.getName())){
+                    case "csv": main.getPersonList().clear(); main.getPersonList().addAll(Person.fromCSV(file)); break;
+                    case "json": main.getPersonList().clear(); main.getPersonList().addAll(Person.fromJSON(file)); break;
+                    default: break;
+                }
+                if(main.getPersonList().size() != 0)
+                    main.getPersonRepository().addPeople(main.getPersonList());
+            }
+
+        }
+    }
+
+    public static String getFileExtension(String fileName){
+        int i = fileName.lastIndexOf('.');
+        return i >= 0 ? fileName.substring(i+1) : "";
+    }
+
 }

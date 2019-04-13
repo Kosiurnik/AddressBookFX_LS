@@ -60,9 +60,10 @@
     </AnchorPane>
     <ButtonBar stylesheets="@rootStyle.css">
       <buttons>
-          <Button fx:id="fxButtonNewPerson" mnemonicParsing="false" onMouseClicked="#newPerson" stylesheets="@rootStyle.css" text="New Person" />
+          <Button fx:id="fxButtonNewPerson" mnemonicParsing="false" onMouseClicked="#newPerson" stylesheets="@rootStyle.css" text="Add" />
           <Button fx:id="fxButtonEditPerson" mnemonicParsing="false" onMouseClicked="#editPerson" stylesheets="@rootStyle.css" text="Edit" />
           <Button fx:id="fxButtonDeletePerson" mnemonicParsing="false" onMouseClicked="#deletePerson" stylesheets="@rootStyle.css" text="Delete" />
+          <Button fx:id="fxButtonImportData" mnemonicParsing="false" onMouseClicked="#importData" stylesheets="@rootStyle.css" text="Import" />
           <Button fx:id="fxButtonSavePerson" mnemonicParsing="false" onMouseClicked="#savePerson" stylesheets="@rootStyle.css" text="Save" />
       </buttons>
         <VBox.margin>

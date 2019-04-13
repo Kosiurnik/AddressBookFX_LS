@@ -39,14 +39,16 @@ public class AddPersonController implements Initializable {
     }
 
     public void addPerson(MouseEvent mouseEvent) {
-        main.getPersonList().add(new Person(
+        Person person = new Person(
                 fxPersonFormName.getText(),
                 fxPersonFormLastName.getText(),
                 fxPersonFormAddress.getText(),
                 fxPersonFormPostalCode.getText(),
                 fxPersonFormTelephone.getText(),
                 fxPersonFormCity.getText()
-        ));
+        );
+        main.getPersonList().add(person);
+        main.getPersonRepository().addPerson(person);
         Stage stage = (Stage) fxPersonFormSaveButton.getScene().getWindow();
         stage.close();
     }
